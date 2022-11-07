@@ -1,0 +1,4 @@
+https://www.geeksforgeeks.org/n-queen-in-on-space/
+
+
+Algoritmos: Backtracking
