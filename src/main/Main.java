@@ -1,6 +1,8 @@
+package main;
+
 import java.util.Scanner;
 
-import models.Board;
+import main.models.Board;
 
 public class Main {
     public static void main(String[] args) {
