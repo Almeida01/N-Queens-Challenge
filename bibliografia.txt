@@ -1,4 +1,5 @@
 https://www.geeksforgeeks.org/n-queen-in-on-space/
+https://www.geeksforgeeks.org/n-queen-problem-backtracking-3/
 
 
 Algoritmos: Backtracking
