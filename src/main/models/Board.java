@@ -1,18 +1,22 @@
 package main.models;
 
+import main.services.Ilayout;
+
 import java.util.BitSet;
+import java.util.List;
 import java.util.Objects;
 
-public class Board {
+public class Board implements Ilayout {
     private final int n;
-    private final int dim;
+    private static final int dim = 0;
     private final BitSet board;
+    private final int numberOfQueens;
 
     public Board(int n) {
         this.n = n;
         this.dim = n*n;
         this.board = new BitSet(dim);
-        board.set(3);
+        numberOfQueens = 0;
     }
 
     public String toString() {
@@ -32,5 +36,25 @@ public class Board {
 
     public int hashCode() {
         return Objects.hashCode(this.board);
+    }
+
+    @Override
+    public List<Ilayout> children() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoal(Ilayout l) {
+        return false;
+    }
+
+    @Override
+    public double getG() {
+        return 0;
+    }
+
+    @Override
+    public boolean isPossible(Ilayout goal) {
+        return false;
     }
 }
