@@ -2,3 +2,15 @@ https://www.geeksforgeeks.org/n-queen-in-on-space/
 
 
 Algoritmos: Backtracking
+
+
+private boolean validate(int x, int y) {
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < y; j++) {
+                if(!board[i][j] && (x + j == y + i || x + y == i + j || x == i))
+                    return false;
+            }
+        }
+        board[x][y] = true;
+        return true;
+    }

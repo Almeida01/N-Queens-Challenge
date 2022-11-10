@@ -7,7 +7,9 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         Board b1 = new Board(sc.nextInt());
-        System.out.println(b1.toString());
+        b1.addQueen(0, 0);
+        System.out.println(b1);
+
         sc.close();
     }
 }
