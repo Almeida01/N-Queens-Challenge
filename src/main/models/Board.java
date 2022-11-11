@@ -18,6 +18,8 @@ public class Board implements Ilayout, Cloneable {
     
     private int currentLine = 0;
     private int numOfCollisions;
+    
+    private int[] frontSlashCollisions;
 
     public Board(int n) {
         this.n = n;
@@ -27,13 +29,24 @@ public class Board implements Ilayout, Cloneable {
                 .limit(n)
                 .toArray();
         numOfCollisions = collides(board);
+        this.frontSlashCollisions = new int[2*(this.n)-1];
+    }
+
+    public int[] calculateFrontSlashCollisions(Board b) {
+        //y=x-n+frontSlashCollisions[i]
+        for (int i = 0; i < board.length; i++) {
+            int x = i;
+            int y = board[i];
+            if ( y==x-n+frontSlashCollisions[x+y] ) frontSlashCollisions[x+y] = frontSlashCollisions[x+y]
+            ++;
+        }
+        return frontSlashCollisions;
     }
 
     public Board(int n, int[] board) {
         this.n = n;
         this.board = board;
         numOfCollisions = collides(board);
-
     }
 
     public String toString() {
@@ -58,6 +71,14 @@ public class Board implements Ilayout, Cloneable {
         swappedBoard[i] = board[j];
         swappedBoard[j] = board[i];
         return swappedBoard;
+    }
+
+    public boolean frontSlashCollision(int x, int y) {
+        //y=x-n+/[i]
+
+
+
+        return true;
     }
 
     private boolean checkDiagonalCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
