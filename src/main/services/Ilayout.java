@@ -14,12 +14,12 @@ public interface Ilayout {
      * return false otherwise.
      */
 
-    boolean isGoal(Ilayout l);
+    boolean isGoal();
 
     /**
      * @return the cost for moving from the input config to the receiver.
      */
-    double getG();
+    int getG();
 
     /**
      * @return if is possible to achieve goal from the current state

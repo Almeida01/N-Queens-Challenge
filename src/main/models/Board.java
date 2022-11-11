@@ -15,47 +15,49 @@ public class Board implements Ilayout, Cloneable {
      * Each index of the array represents a row, where each index value represents the column where a queen is placed.
      */
     private final int[] board;
+    
     private int currentLine = 0;
+    private int numOfCollisions;
 
     public Board(int n) {
         this.n = n;
-        this.board = new int[n];
+        this.board = new Random()
+                .ints(0, n)
+                .distinct()
+                .limit(n)
+                .toArray();
+        numOfCollisions = collides(board);
     }
 
-    public Board(int n, int[] board, int currentLine) {
+    public Board(int n, int[] board) {
         this.n = n;
         this.board = board;
-        this.currentLine = currentLine;
+        numOfCollisions = collides(board);
+
     }
 
     public String toString() {
         StringBuilder str = new StringBuilder();
-        int row = 0, col = 0;
-        while (row < currentLine) {
-            if (col != board[row]) str.append(" - ");
-            else str.append(" Q ");
-            col++;
-            if (col == n) {
-                str.append('\n');
-                col = 0;
-                row++;
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < n; col++) {
+                if (board[row] == col) str.append(" Q ");
+                else str.append(" - ");
             }
+            str.append("\n");
         }
-
-        while (row < n) {
-            str.append(" - ");
-            col++;
-            if (col == n) {
-                str.append('\n');
-                col = 0;
-                row++;
-            }
-        }
+        str.append("NUMBER OF COLLISIONS: " + numOfCollisions + "\n");
         return str.toString();
     }
 
     public int hashCode() {
         return Objects.hashCode(this.board);
+    }
+
+    private int[] swapColumns(int i, int j) {
+        int[] swappedBoard = board.clone();
+        swappedBoard[i] = board[j];
+        swappedBoard[j] = board[i];
+        return swappedBoard;
     }
 
     private boolean checkDiagonalCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
@@ -72,37 +74,47 @@ public class Board implements Ilayout, Cloneable {
      * This method checks if a given queen <code>tempQueenC</code> attacks any other queen.
      * It iterates every other queen checking for collisions.
      *
-     * @param tempQueenR Row of queen being placed.
      * @return Returns a boolean value. True if it collides, false otherwise.
      */
-    private boolean collides(int tempQueenR) {
-        int tempQueenC = board[tempQueenR]; // Column of temporary queen
+    private int collides(int[] board) {
+        int collisions = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (checkAxisCollision(i, board[i], j, board[j])
+                        || checkDiagonalCollision(i, board[i], j, board[j]))
+                    collisions++;
+            }
+        }
+        /*int tempQueenC = board[tempQueenR]; // Column of temporary queen
         for (int row = 0; row < currentLine; row++) {
             int qCol = board[row];
             if (checkAxisCollision(tempQueenR, tempQueenC, row, qCol) || checkDiagonalCollision(tempQueenR, tempQueenC, row, qCol))
-                return true;
-        }
-        return false;
+                collisions++;
+        }*/
+        return collisions;
     }
 
     @Override
     public List<Ilayout> children() {
         List<Ilayout> children = new ArrayList<>();
-        for (int col = 0; col < n; col++) {
-            board[currentLine] = col;
-            if (!collides(currentLine)) children.add(new Board(this.n, this.board.clone(),currentLine + 1));
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int[] x = swapColumns(i, j);
+                if (collides(x) < numOfCollisions)
+                    children.add(new Board(this.n, x));
+            }
         }
         return children;
     }
 
     @Override
-    public boolean isGoal(Ilayout l) {
-        return currentLine == n;
+    public boolean isGoal() {
+        return numOfCollisions == 0;
     }
 
     @Override
-    public double getG() {
-        return 0;
+    public int getG() {
+        return numOfCollisions;
     }
 
     @Override
