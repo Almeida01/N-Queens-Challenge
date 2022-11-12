@@ -15,7 +15,7 @@ public class Board implements Ilayout, Cloneable {
      * Each index of the array represents a row, where each index value represents the column where a queen is placed.
      */
     private final int[] board;
-    
+
     private int currentLine = 0;
     private int numOfCollisions;
 
