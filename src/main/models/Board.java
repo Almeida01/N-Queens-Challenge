@@ -78,6 +78,33 @@ public class Board implements Ilayout {
     }
 
     private int updateSlashCollisions(int i, int j) {
+        int[] diagonals = new int[4];
+        // Before switch
+        // For queen in row i
+        int bFrontSlashIndexI = getFrontSlashIndex(i, board[i]);
+        int bBackSlashIndexI = getBackSlashIndex(i, board[i]);
+        diagonals[0] = (frontSlashCollisions[bFrontSlashIndexI] - 1) + (backSlashCollisions[bBackSlashIndexI] - 1);
+
+        // For queen in row j
+        int bFrontSlashIndexJ = getFrontSlashIndex(j, board[j]);
+        int bBackSlashIndexJ = getBackSlashIndex(j, board[j]);
+        diagonals[1] = (frontSlashCollisions[bFrontSlashIndexJ] - 1) + (backSlashCollisions[bBackSlashIndexJ] - 1);
+
+        // After switch
+        // For queen in row i
+        int aFrontSlashIndexI = getFrontSlashIndex(i, board[j]);
+        int aBackSlashIndexI = getBackSlashIndex(i, board[j]);
+        diagonals[2] = (frontSlashCollisions[aFrontSlashIndexI] + 1) + (backSlashCollisions[aBackSlashIndexI] + 1);
+        // For queen in row j
+        int aFrontSlashIndexJ = getFrontSlashIndex(j, board[i]);
+        int aBackSlashIndexJ = getBackSlashIndex(j, board[i]);
+        diagonals[3] = (frontSlashCollisions[aFrontSlashIndexJ] + 1) + (backSlashCollisions[aBackSlashIndexJ] + 1);
+
+        int dif = (diagonals[2] + diagonals[3]) - (diagonals[0] + diagonals[1]);
+        return dif;
+    }
+
+    /*private int updateSlashCollisions(int i, int j) {
         // Old position: (R, C) -> (i, board[i])
         // New position: (R, C) -> (i, board[j])
         int bFrontSlashIndexI = getFrontSlashIndex(i, board[i]);
@@ -112,7 +139,7 @@ public class Board implements Ilayout {
         else if (aBackSlashIndexI == aBackSlashIndexJ) after -= bI;
 
         return after - before;
-    }
+    }*/
 
 
     private int getFrontSlashIndex(int row, int col) {

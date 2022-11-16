@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="110ff28f-2a02-4175-a69a-0e4b5a1e238d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/services/AStar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/models/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/models/Board.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,6 +36,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/gonca/Desktop/Uni/IA/N-Queens-Challenge&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -78,6 +77,10 @@
       <workItem from="1668211817700" duration="3863000" />
       <workItem from="1668424957072" duration="14194000" />
       <workItem from="1668521748178" duration="13571000" />
+      <workItem from="1668598827926" duration="70000" />
+      <workItem from="1668605920730" duration="30000" />
+      <workItem from="1668608498555" duration="270000" />
+      <workItem from="1668608810789" duration="1368000" />
     </task>
     <servers />
   </component>
@@ -100,8 +103,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/models/Board.java</url>
-          <line>170</line>
+          <line>197</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/models/Board.java</url>
+          <line>126</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
