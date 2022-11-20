@@ -1,21 +1,27 @@
 package main.services;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
-public class AStar {
+public class IterativeDeepening {
+
     protected Queue<State> abertos;
     private Map<Ilayout, State> fechados;
     private State actual;
+    private boolean cutoff;
     private static State first;
 
     public static class State {
         private Ilayout layout;
         private State father;
+        int depth;
         private int g; // Cost from start state to current
         private int h; // Cost from current state to final state
         private int f; // Estimated cost
 
-        public State(Ilayout l, State n) {
+        public State(Ilayout l, State n, int depth) {
             layout = l;
             father = n;
 
@@ -61,7 +67,7 @@ public class AStar {
         for (Ilayout e : children) {
             if (n.father == null || !e.equals(n.father.layout)) {
                 //System.out.println(e);
-                State nn = new State(e, n);
+                State nn = new State(e, n, n.depth + 1);
                 //System.out.println(nn);
                 sucs.add(nn);
             }
@@ -69,35 +75,24 @@ public class AStar {
         return sucs;
     }
 
-    final public Ilayout solve(Ilayout s) {
-        abertos = new PriorityQueue<>(1000,
-                (s1, s2) -> (int) Math.signum(s1.getG() - s2.getG()));
-
-        fechados = new HashMap<>();
-        abertos.add(new State(s, null));
-        List<State> sucs;
-        try {
-            while (true) {
-                if (abertos.isEmpty()) return null;
-                actual = abertos.poll(); // Poll retrieves and removes the head of the list
-                if (actual.layout.isGoal()) {
-                    return actual.layout;
-                } else {
-                    fechados.put(actual.layout, actual);
-                    sucs = sucessores(actual);
-                    for (State cpy : sucs) {
-                        if (!fechados.containsKey(cpy.layout)) {
-                            fechados.put(cpy.layout, cpy);
-                            abertos.add(cpy);
-                        }
-                    }
-                }
-            }
-        } catch (OutOfMemoryError error) {
-            System.out.println("error");
-            System.exit(-1);
+    private Ilayout solve(Ilayout problem) {
+        int depth = 0;
+        while (true) {
+            Ilayout result = DLS(new State(problem, null, 0), problem, depth);
+            if (!cutoff) return result;
         }
-        return null;
     }
-}
 
+    private Ilayout DLS(State state, Ilayout problem, int limit) {
+        cutoff = false;
+        if (state.layout.isGoal()) return problem;
+        else if (state.depth != limit) return null;
+        else {
+            for (State suc : sucessores(state)) {
+                Ilayout result = DLS(suc, problem, limit);
+                if (result == cutoff) cutoff = true;
+            }
+        }
+    }
+
+}

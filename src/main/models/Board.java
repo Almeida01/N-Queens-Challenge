@@ -13,40 +13,85 @@ public class Board implements Ilayout {
      * An integer array representing the board.\n
      * Each index of the array represents a row, where each index value represents the column where a queen is placed.
      */
-    private final int[] board;
-    private int currentLine = 0;
+    private int[] board;
 
-    private int numOfCollisions;
+    private int numOfCollisions = 0;
+    private int nChildren = 0;
     private static int NUMBER_OF_DIAGONALS;
 
-    private final int[] frontSlashCollisions;
-    private final int[] backSlashCollisions;
+    private int[] frontSlashCollisions;
+    private int[] backSlashCollisions;
+    private boolean isFather = false;
 
 
     public Board(int n) {
         this.n = n;
-        this.board = new Random()
-                .ints(0, n)
-                .distinct()
-                .limit(n)
-                .toArray();
+//        this.board = new int[]{1, 0, 3, 2};
+        while (!isPossible()) fillBoard();
+//        this.board = new int[n];
+        //generateInitNQueens(1);
         NUMBER_OF_DIAGONALS = 2 * n - 1;
-        this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
-        this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
+//        this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
+//        this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         numOfCollisions = collides();
+        updatedDiagonalCollisions();
+        isFather = true;
     }
 
     public Board(int n, int[] board, int numOfCollisions) {
         this.n = n;
         this.board = board;
         NUMBER_OF_DIAGONALS = 2 * n - 1;
-        this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
-        this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         this.numOfCollisions = numOfCollisions;
-        updatedDiagonalCollisions();
-
     }
 
+    /*private void generateInitNQueens(int p) {
+        int col = p;
+        int row = 0;
+        int save = col + 1;
+
+        if (col % 2 == 0) {
+            while (row < n) {
+                if (col + 2 < n) {
+                    board[row] = col + 2;
+                    col = col + 2;
+                } else {
+                    if (save == 2) { col = save;
+                        save++;
+                    } else {
+                        col = 1;
+                        save = 2;
+                    }
+                    board[row] = col;
+                }
+                row++;
+            }
+            if (board[0] == board[n - 1]) board[n-1] = 0;
+        } else {
+            while (row < n) {
+                if (col + 2 < n) {
+                    board[row] = col + 2;
+                    col += 2;
+                } else {
+                    if (save == 1) col = save++;
+                    else {
+                        col = 0;
+                        save = 1;
+                    }
+                    board[row] = col;
+                }
+                row++;
+            }
+        }
+    }
+*/
+    private void fillBoard() {
+        this.board = new Random()
+                .ints(0, n)
+                .distinct()
+                .limit(n)
+                .toArray();
+    }
 
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -57,9 +102,10 @@ public class Board implements Ilayout {
             }
             str.append("\n");
         }
-        str.append("FRONT SLASH COLLISIONS = ").append(Arrays.toString(frontSlashCollisions)).append("\n");
-        str.append("BACK SLASH COLLISIONS = ").append(Arrays.toString(backSlashCollisions)).append("\n");
         str.append("NUMBER OF COLLISIONS: ").append(numOfCollisions).append("\n");
+//        str.append("Front: ").append(Arrays.toString(frontSlashCollisions)).append("\n");
+//        str.append("Back: ").append(Arrays.toString(backSlashCollisions)).append("\n");
+
         return str.toString();
     }
 
@@ -78,69 +124,46 @@ public class Board implements Ilayout {
     }
 
     private int updateSlashCollisions(int i, int j) {
-        int[] diagonals = new int[4];
+        int prevQFSlash = 0, prevQBSlash = 0;
+        int aftQFSlash = 0, aftQBSlash = 0;
+        int slope = calcSlope(i, board[i], j, board[j]);
+
+//        if (slope == -1) aftQBSlash++;
+//        else if (slope == 1) aftQFSlash++;
+        if (slope == 1 || slope == -1) {
+            aftQBSlash++;
+            aftQFSlash++;
+        }
+
         // Before switch
         // For queen in row i
         int bFrontSlashIndexI = getFrontSlashIndex(i, board[i]);
         int bBackSlashIndexI = getBackSlashIndex(i, board[i]);
-        diagonals[0] = (frontSlashCollisions[bFrontSlashIndexI] - 1) + (backSlashCollisions[bBackSlashIndexI] - 1);
+        prevQFSlash += (frontSlashCollisions[bFrontSlashIndexI] - 1);
+        prevQBSlash += (backSlashCollisions[bBackSlashIndexI] - 1);
 
         // For queen in row j
         int bFrontSlashIndexJ = getFrontSlashIndex(j, board[j]);
         int bBackSlashIndexJ = getBackSlashIndex(j, board[j]);
-        diagonals[1] = (frontSlashCollisions[bFrontSlashIndexJ] - 1) + (backSlashCollisions[bBackSlashIndexJ] - 1);
+        prevQFSlash += (frontSlashCollisions[bFrontSlashIndexJ] - 1);
+        prevQBSlash += (backSlashCollisions[bBackSlashIndexJ] - 1);
 
         // After switch
         // For queen in row i
         int aFrontSlashIndexI = getFrontSlashIndex(i, board[j]);
         int aBackSlashIndexI = getBackSlashIndex(i, board[j]);
-        diagonals[2] = (frontSlashCollisions[aFrontSlashIndexI] + 1) + (backSlashCollisions[aBackSlashIndexI] + 1);
+        aftQFSlash += (frontSlashCollisions[aFrontSlashIndexI]);
+        aftQBSlash += (backSlashCollisions[aBackSlashIndexI]);
+
         // For queen in row j
         int aFrontSlashIndexJ = getFrontSlashIndex(j, board[i]);
         int aBackSlashIndexJ = getBackSlashIndex(j, board[i]);
-        diagonals[3] = (frontSlashCollisions[aFrontSlashIndexJ] + 1) + (backSlashCollisions[aBackSlashIndexJ] + 1);
+        aftQFSlash += (frontSlashCollisions[aFrontSlashIndexJ]);
+        aftQBSlash += (backSlashCollisions[aBackSlashIndexJ]);
 
-        int dif = (diagonals[2] + diagonals[3]) - (diagonals[0] + diagonals[1]);
+        int dif = (aftQFSlash + aftQBSlash) - (prevQFSlash + prevQBSlash);
         return dif;
     }
-
-    /*private int updateSlashCollisions(int i, int j) {
-        // Old position: (R, C) -> (i, board[i])
-        // New position: (R, C) -> (i, board[j])
-        int bFrontSlashIndexI = getFrontSlashIndex(i, board[i]);
-        int bBackSlashIndexI = getBackSlashIndex(i, board[i]);
-        int bFrontSlashIndexJ = getFrontSlashIndex(j, board[j]);
-        int bBackSlashIndexJ = getBackSlashIndex(j, board[j]);
-
-        // Get collisions in diagonals before swap
-        int fI = frontSlashCollisions[bFrontSlashIndexI] > 1 ? frontSlashCollisions[bFrontSlashIndexI] - 1 : 0;
-        int bI = backSlashCollisions[bBackSlashIndexI] > 1 ? backSlashCollisions[bBackSlashIndexI] - 1 : 0;
-        int fJ = frontSlashCollisions[bFrontSlashIndexJ] > 1 ? frontSlashCollisions[bFrontSlashIndexJ] - 1 : 0;
-        int bJ = backSlashCollisions[bBackSlashIndexJ] > 1 ? backSlashCollisions[bBackSlashIndexJ] - 1 : 0;
-
-        int before = fI + bI + fJ + bJ;
-        if (bFrontSlashIndexI == bFrontSlashIndexJ) before -= fI;
-        else if (bBackSlashIndexI == bBackSlashIndexJ) before -= bI;
-
-        int aFrontSlashIndexI = getFrontSlashIndex(i, board[j]);
-        int aBackSlashIndexI = getBackSlashIndex(i, board[j]);
-        int aFrontSlashIndexJ = getFrontSlashIndex(j, board[i]);
-        int aBackSlashIndexJ = getBackSlashIndex(j, board[i]);
-
-        // Get collisions in diagonals after swap
-        fI = frontSlashCollisions[aFrontSlashIndexI] + 1 > 1 ? frontSlashCollisions[aFrontSlashIndexI] : 0;
-        bI = backSlashCollisions[aBackSlashIndexI] + 1 > 1 ? backSlashCollisions[aBackSlashIndexI] : 0;
-        fJ = frontSlashCollisions[aFrontSlashIndexJ] + 1 > 1 ? frontSlashCollisions[aFrontSlashIndexJ] : 0;
-        bJ = backSlashCollisions[aBackSlashIndexJ] + 1 > 1 ? backSlashCollisions[aBackSlashIndexJ] : 0;
-
-        // Get collisions in diagonals after swap
-        int after = fI + bI + fJ + bJ;
-        if (aFrontSlashIndexI == aFrontSlashIndexJ) after -= fI;
-        else if (aBackSlashIndexI == aBackSlashIndexJ) after -= bI;
-
-        return after - before;
-    }*/
-
 
     private int getFrontSlashIndex(int row, int col) {
         return row + col;
@@ -156,16 +179,26 @@ public class Board implements Ilayout {
         return deltaCol == deltaRow;
     }
 
+    private int calcSlope(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
+        int deltaRow = abs(tempQueenR - Q2row);
+        int deltaCol = abs(tempQueenC - Q2col);
+        return deltaCol / deltaRow;
+    }
+
     private boolean checkAxisCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
         return tempQueenC == Q2col || tempQueenR == Q2row;
     }
 
     private void updatedDiagonalCollisions() {
+        this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
+        this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         for (int i = 0; i < n; i++) {
             int frontSlashIndex = getFrontSlashIndex(i, board[i]);
             int backSlashIndex = getBackSlashIndex(i, board[i]);
             frontSlashCollisions[frontSlashIndex]++;
             backSlashCollisions[backSlashIndex]++;
+//            if (frontSlashCollisions[frontSlashIndex] > 1) numOfCollisions++;
+//            if (backSlashCollisions[backSlashIndex] > 1) numOfCollisions++;
         }
     }
 
@@ -177,36 +210,37 @@ public class Board implements Ilayout {
      */
     private int collides() {
         int collisions = 0;
-        for (int i = 0; i < n; i++) {
-            int frontSlashIndex = getFrontSlashIndex(i, board[i]);
-            int backSlashIndex = getBackSlashIndex(i, board[i]);
-            frontSlashCollisions[frontSlashIndex]++;
-            backSlashCollisions[backSlashIndex]++;
-
-            for (int j = i + 1; j < n; j++) {
-                if (checkAxisCollision(i, board[i], j, board[j])
-                        || checkDiagonalCollision(i, board[i], j, board[j])) {
-                    collisions++;
-                }
-            }
-        }
+        for (int i = 0; i < n; i++)
+            for (int j = i + 1; j < n; j++)
+                if (checkDiagonalCollision(i, board[i], j, board[j])) collisions++;
         return collisions;
     }
 
     @Override
     public List<Ilayout> children() {
+        if (!isFather) updatedDiagonalCollisions();
         List<Ilayout> children = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 int dif = updateSlashCollisions(i, j);
                 if (dif <= 0) {
                     swapColumns(i, j);
-                    children.add(new Board(this.n, this.board.clone(), this.numOfCollisions + dif));
+                    if (!isPossible()) {
+                        swapColumns(i, j);
+                        continue;
+                    }
+                    children.add(new Board(this.n, this.board.clone(), numOfCollisions + dif));
                     swapColumns(i, j);
+                    if (this.numOfCollisions + dif == 0) {
+                        this.backSlashCollisions = null;
+                        this.frontSlashCollisions = null;
+                        return children;
+                    }
                 }
-
             }
         }
+        this.frontSlashCollisions = null;
+        this.backSlashCollisions = null;
         return children;
     }
 
@@ -221,7 +255,8 @@ public class Board implements Ilayout {
     }
 
     @Override
-    public boolean isPossible(Ilayout goal) {
-        return false;
+    public boolean isPossible() {
+        if (board == null) return false;
+        return !((n % 2 == 0 && board[1] == 1));
     }
 }

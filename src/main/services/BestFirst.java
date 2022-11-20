@@ -6,7 +6,6 @@ public class BestFirst {
     protected Queue<State> abertos;
     private Map<Ilayout, State> fechados;
     private State actual;
-    protected static Ilayout objective;
 
     public static class State {
         private Ilayout layout;
@@ -43,13 +42,12 @@ public class BestFirst {
 
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();
-        /*System.out.println("---- PAI -----");
-        System.out.println(n);
-        System.out.println("---- FILHOS -----");*/
+//        System.out.println("---- PAI -----");
+//        System.out.println(n);
+//        System.out.println("---- FILHOS -----");
         List<Ilayout> children = n.layout.children();
         for (Ilayout e : children) {
             if (n.father == null || !e.equals(n.father.layout)) {
-//                System.out.println(e);
                 State nn = new State(e, n);
                 sucs.add(nn);
             }
@@ -58,7 +56,7 @@ public class BestFirst {
     }
 
     final public Ilayout solve(Ilayout s) {
-        abertos = new PriorityQueue<>(10,
+        abertos = new PriorityQueue<>(100,
                 (s1, s2) -> (int) Math.signum(s1.getG() - s2.getG()));
 
         fechados = new HashMap<>();
@@ -74,9 +72,10 @@ public class BestFirst {
                     fechados.put(actual.layout, actual);
                     sucs = sucessores(actual);
                     for (State cpy : sucs) {
+//                        System.out.println(cpy);
                         if (!fechados.containsKey(cpy.layout)) {
-                            fechados.put(cpy.layout, cpy);
                             abertos.add(cpy);
+                            fechados.put(cpy.layout, cpy);
                         }
                     }
                 }
