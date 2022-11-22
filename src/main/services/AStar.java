@@ -34,7 +34,7 @@ public class AStar {
             return layout.toString() + " " + f;
         }
 
-        public double getG() {
+        public double getF() {
             return this.f;
         }
 
@@ -54,13 +54,13 @@ public class AStar {
 
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();
-        /*System.out.println("---- PAI -----");
+        System.out.println("---- PAI -----");
         System.out.println(n);
-        System.out.println("---- FILHOS -----");*/
+        System.out.println("---- FILHOS -----");
         List<Ilayout> children = n.layout.children();
         for (Ilayout e : children) {
             if (n.father == null || !e.equals(n.father.layout)) {
-                //System.out.println(e);
+                System.out.println(e);
                 State nn = new State(e, n);
                 //System.out.println(nn);
                 sucs.add(nn);
@@ -71,7 +71,7 @@ public class AStar {
 
     final public Ilayout solve(Ilayout s) {
         abertos = new PriorityQueue<>(1000,
-                (s1, s2) -> (int) Math.signum(s1.getG() - s2.getG()));
+                (s1, s2) -> (int) Math.signum(s1.getF() - s2.getF()));
 
         fechados = new HashMap<>();
         abertos.add(new State(s, null));
@@ -80,9 +80,8 @@ public class AStar {
             while (true) {
                 if (abertos.isEmpty()) return null;
                 actual = abertos.poll(); // Poll retrieves and removes the head of the list
-                if (actual.layout.isGoal()) {
-                    return actual.layout;
-                } else {
+                if (actual.layout.isGoal()) return actual.layout;
+                else {
                     fechados.put(actual.layout, actual);
                     sucs = sucessores(actual);
                     for (State cpy : sucs) {
