@@ -172,6 +172,14 @@ public class Board implements Ilayout {
         return Math.abs(n - 1 - col + row);
     }
 
+    public boolean frontSlashCollision(int x, int y) {
+        //y=x-n+/[i]
+
+
+
+        return true;
+    }
+
     private boolean checkDiagonalCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
         int deltaRow = abs(tempQueenR - Q2row);
         int deltaCol = abs(tempQueenC - Q2col);
