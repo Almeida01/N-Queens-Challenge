@@ -2,28 +2,40 @@ package main.services;
 
 import java.util.*;
 
-public class BestFirst {
+public class AStar {
     protected Queue<State> abertos;
     private Map<Ilayout, State> fechados;
     private State actual;
+    private static State first;
 
     public static class State {
         private Ilayout layout;
         private State father;
-        private int g;
+        private int g; // Cost from start state to current
+        private int h; // Cost from current state to final state
+        private int f; // Estimated cost
 
         public State(Ilayout l, State n) {
             layout = l;
             father = n;
-            g = layout.getG();
+
+            if (father == null) {
+                first = this;
+                g = layout.getG();
+            } else {
+                g = first.g;
+                h = layout.getG();
+            }
+
+            f = g + h;
         }
 
         public String toString() {
-            return layout.toString();
+            return layout.toString() + " " + f;
         }
 
-        public double getG() {
-            return this.g;
+        public double getF() {
+            return this.f;
         }
 
         public int hashCode() {
@@ -42,13 +54,15 @@ public class BestFirst {
 
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();
-//        System.out.println("---- PAI -----");
-//        System.out.println(n);
-//        System.out.println("---- FILHOS -----");
+        System.out.println("---- PAI -----");
+        System.out.println(n);
+        System.out.println("---- FILHOS -----");
         List<Ilayout> children = n.layout.children();
         for (Ilayout e : children) {
             if (n.father == null || !e.equals(n.father.layout)) {
+                System.out.println(e);
                 State nn = new State(e, n);
+                //System.out.println(nn);
                 sucs.add(nn);
             }
         }
@@ -56,8 +70,8 @@ public class BestFirst {
     }
 
     final public Ilayout solve(Ilayout s) {
-        abertos = new PriorityQueue<>(100,
-                (s1, s2) -> (int) Math.signum(s1.getG() - s2.getG()));
+        abertos = new PriorityQueue<>(1000,
+                (s1, s2) -> (int) Math.signum(s1.getF() - s2.getF()));
 
         fechados = new HashMap<>();
         abertos.add(new State(s, null));
@@ -66,16 +80,14 @@ public class BestFirst {
             while (true) {
                 if (abertos.isEmpty()) return null;
                 actual = abertos.poll(); // Poll retrieves and removes the head of the list
-                if (actual.layout.isGoal()) {
-                    return actual.layout;
-                } else {
+                if (actual.layout.isGoal()) return actual.layout;
+                else {
                     fechados.put(actual.layout, actual);
                     sucs = sucessores(actual);
                     for (State cpy : sucs) {
-//                        System.out.println(cpy);
                         if (!fechados.containsKey(cpy.layout)) {
-                            abertos.add(cpy);
                             fechados.put(cpy.layout, cpy);
+                            abertos.add(cpy);
                         }
                     }
                 }
@@ -87,3 +99,4 @@ public class BestFirst {
         return null;
     }
 }
+

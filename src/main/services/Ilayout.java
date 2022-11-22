@@ -24,5 +24,5 @@ public interface Ilayout {
     /**
      * @return if is possible to achieve goal from the current state
      */
-    boolean isPossible(Ilayout goal);
+    boolean isPossible();
 }
