@@ -90,9 +90,10 @@ public class IterativeDeepening {
         else {
             for (State suc : sucessores(state)) {
                 Ilayout result = DLS(suc, problem, limit);
-                if (result == cutoff) cutoff = true;
+//                if (result == cutoff) cutoff = true;
             }
         }
+        return null;
     }
 
 }

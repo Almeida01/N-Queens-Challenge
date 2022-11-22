@@ -5,8 +5,10 @@ import main.services.Ilayout;
 import java.util.*;
 
 import static java.lang.Math.abs;
+import static java.util.Random.*;
 
 public class Board implements Ilayout {
+    private final static Random random = new Random();
     private final int n;
 
     /**
@@ -16,7 +18,6 @@ public class Board implements Ilayout {
     private int[] board;
 
     private int numOfCollisions = 0;
-    private int nChildren = 0;
     private static int NUMBER_OF_DIAGONALS;
 
     private int[] frontSlashCollisions;
@@ -26,13 +27,9 @@ public class Board implements Ilayout {
 
     public Board(int n) {
         this.n = n;
-//        this.board = new int[]{1, 0, 3, 2};
         while (!isPossible()) fillBoard();
-//        this.board = new int[n];
         //generateInitNQueens(1);
         NUMBER_OF_DIAGONALS = 2 * n - 1;
-//        this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
-//        this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         numOfCollisions = collides();
         updatedDiagonalCollisions();
         isFather = true;
@@ -45,7 +42,8 @@ public class Board implements Ilayout {
         this.numOfCollisions = numOfCollisions;
     }
 
-    /*private void generateInitNQueens(int p) {
+    private void generateInitNQueens(int p) {
+        board = new int[n];
         int col = p;
         int row = 0;
         int save = col + 1;
@@ -56,7 +54,8 @@ public class Board implements Ilayout {
                     board[row] = col + 2;
                     col = col + 2;
                 } else {
-                    if (save == 2) { col = save;
+                    if (save == 2) {
+                        col = save;
                         save++;
                     } else {
                         col = 1;
@@ -66,7 +65,7 @@ public class Board implements Ilayout {
                 }
                 row++;
             }
-            if (board[0] == board[n - 1]) board[n-1] = 0;
+            if (board[0] == board[n - 1]) board[n - 1] = 0;
         } else {
             while (row < n) {
                 if (col + 2 < n) {
@@ -84,7 +83,7 @@ public class Board implements Ilayout {
             }
         }
     }
-*/
+
     private void fillBoard() {
         this.board = new Random()
                 .ints(0, n)
@@ -131,8 +130,8 @@ public class Board implements Ilayout {
 //        if (slope == -1) aftQBSlash++;
 //        else if (slope == 1) aftQFSlash++;
         if (slope == 1 || slope == -1) {
-            aftQBSlash++;
             aftQFSlash++;
+            aftQBSlash++;
         }
 
         // Before switch
@@ -216,6 +215,14 @@ public class Board implements Ilayout {
         return collisions;
     }
 
+    private int collides(int n) {
+        int collisions = 0;
+        for (int i = 0; i < n; i++)
+            for (int j = i + 1; j < n; j++)
+                if (checkDiagonalCollision(i, board[i], j, board[j])) collisions++;
+        return collisions;
+    }
+
     @Override
     public List<Ilayout> children() {
         if (!isFather) updatedDiagonalCollisions();
@@ -223,12 +230,10 @@ public class Board implements Ilayout {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 int dif = updateSlashCollisions(i, j);
-                if (dif <= 0) {
+                if (dif < 0) {
+                    System.out.println("Dif: " + dif);
+                    if (!isPossible()) continue;
                     swapColumns(i, j);
-                    if (!isPossible()) {
-                        swapColumns(i, j);
-                        continue;
-                    }
                     children.add(new Board(this.n, this.board.clone(), numOfCollisions + dif));
                     swapColumns(i, j);
                     if (this.numOfCollisions + dif == 0) {
