@@ -5,7 +5,6 @@ import main.services.Ilayout;
 import java.util.*;
 
 import static java.lang.Math.abs;
-import static java.util.Random.*;
 
 public class Board implements Ilayout {
     private final static Random random = new Random();
@@ -28,7 +27,8 @@ public class Board implements Ilayout {
     public Board(int n) {
         this.n = n;
         while (!isPossible()) fillBoard();
-        //generateInitNQueens(1);
+        fillBoard2();
+//        generateInitNQueens(3);
         NUMBER_OF_DIAGONALS = 2 * n - 1;
         numOfCollisions = collides();
         updatedDiagonalCollisions();
@@ -90,6 +90,15 @@ public class Board implements Ilayout {
                 .distinct()
                 .limit(n)
                 .toArray();
+    }
+
+    private void fillBoard2() {
+        int j = 1;
+        for (int i = 0; i < n; i++) {
+            if (j >= n) j = 0;
+            board[i] = j;
+            j += 2;
+        }
     }
 
     public String toString() {
@@ -172,14 +181,6 @@ public class Board implements Ilayout {
         return Math.abs(n - 1 - col + row);
     }
 
-    public boolean frontSlashCollision(int x, int y) {
-        //y=x-n+/[i]
-
-
-
-        return true;
-    }
-
     private boolean checkDiagonalCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
         int deltaRow = abs(tempQueenR - Q2row);
         int deltaCol = abs(tempQueenC - Q2col);
@@ -204,8 +205,6 @@ public class Board implements Ilayout {
             int backSlashIndex = getBackSlashIndex(i, board[i]);
             frontSlashCollisions[frontSlashIndex]++;
             backSlashCollisions[backSlashIndex]++;
-//            if (frontSlashCollisions[frontSlashIndex] > 1) numOfCollisions++;
-//            if (backSlashCollisions[backSlashIndex] > 1) numOfCollisions++;
         }
     }
 
@@ -235,23 +234,32 @@ public class Board implements Ilayout {
     public List<Ilayout> children() {
         if (!isFather) updatedDiagonalCollisions();
         List<Ilayout> children = new ArrayList<>();
+//        Ilayout temp = null;
+//        int smallest = numOfCollisions;
+        Board child;
         for (int i = 0; i < n; i++) {
+            int fColIndex = getFrontSlashIndex(i, board[i]);
+            int bColIndex = getBackSlashIndex(i, board[i]);
+            if (frontSlashCollisions[fColIndex] == 0 && backSlashCollisions[bColIndex] == 0) continue;
+
             for (int j = i + 1; j < n; j++) {
                 int dif = updateSlashCollisions(i, j);
+                //System.out.println("Dif: " + dif);
                 if (dif < 0) {
-                    System.out.println("Dif: " + dif);
-                    if (!isPossible()) continue;
-                    swapColumns(i, j);
-                    children.add(new Board(this.n, this.board.clone(), numOfCollisions + dif));
-                    swapColumns(i, j);
+                    child = new Board(this.n, this.board.clone(), numOfCollisions + dif);
+                    child.swapColumns(i, j);
+                    if (!child.isPossible()) continue;
+                    children.add(child);
                     if (this.numOfCollisions + dif == 0) {
                         this.backSlashCollisions = null;
                         this.frontSlashCollisions = null;
                         return children;
                     }
                 }
+
             }
         }
+
         this.frontSlashCollisions = null;
         this.backSlashCollisions = null;
         return children;

@@ -2,16 +2,50 @@ package main.services;
 
 import java.util.*;
 
+/**
+ * A* algorithm (BestFirst variant) implementation following the Strategy design pattern and ILayout interface.<br>
+ */
 public class AStar {
+    /**
+     * Queue of open states (states to be explored).
+     */
     protected Queue<State> abertos;
+    /**
+     * Map of closed states (states that have been explored). <br>
+     * Avoid exploring states that have been previously explored.
+     */
     private Map<Ilayout, State> fechados;
+    /**
+     * Current state being evaluated.
+     */
     private State actual;
+
+    /**
+     * The head of the state search tree.
+     */
     private static State first;
 
+    /**
+     * State class. <br>
+     * Each state represents a node in the search tree, containing an {@link Ilayout} context object and a father state.
+     */
     public static class State {
+        /**
+         * A variable representing the context which our algorithm is solving to.<br>
+         * The context must implement the {@link Ilayout} interface, in order to be solvable.
+         */
         private Ilayout layout;
+        /**
+         * Father state.
+         */
         private State father;
+        /**
+         * Heuristic value representing cost from start state to current.
+         */
         private int g; // Cost from start state to current
+        /**
+         * Heuristic value representing cost from current state to final.
+         */
         private int h; // Cost from current state to final state
         private int f; // Estimated cost
 
@@ -23,7 +57,7 @@ public class AStar {
                 first = this;
                 g = layout.getG();
             } else {
-                g = first.g;
+                g = first.g - layout.getG();
                 h = layout.getG();
             }
 
@@ -54,13 +88,13 @@ public class AStar {
 
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();
-        System.out.println("---- PAI -----");
+        /*System.out.println("---- PAI -----");
         System.out.println(n);
-        System.out.println("---- FILHOS -----");
+        System.out.println("---- FILHOS -----");*/
         List<Ilayout> children = n.layout.children();
         for (Ilayout e : children) {
             if (n.father == null || !e.equals(n.father.layout)) {
-                System.out.println(e);
+//                System.out.println(e);
                 State nn = new State(e, n);
                 //System.out.println(nn);
                 sucs.add(nn);
