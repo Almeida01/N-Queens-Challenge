@@ -29,7 +29,7 @@ public class AStar {
      * State class. <br>
      * Each state represents a node in the search tree, containing an {@link Ilayout} context object and a father state.
      */
-    public static class State {
+    private static class State {
         /**
          * A variable representing the context which our algorithm is solving to.<br>
          * The context must implement the {@link Ilayout} interface, in order to be solvable.
@@ -42,13 +42,22 @@ public class AStar {
         /**
          * Heuristic value representing cost from start state to current.
          */
-        private int g; // Cost from start state to current
+        private int g;
         /**
          * Heuristic value representing cost from current state to final.
          */
-        private int h; // Cost from current state to final state
-        private int f; // Estimated cost
+        private int h;
+        /**
+         * Heuristic value representing estimated cost of the node state.
+         */
+        private int f;
 
+        private int level = 0;
+
+        /**
+         * State class. <br>
+         * Each state represents a node in the search tree, containing a layout (context object) and a father state.
+         */
         public State(Ilayout l, State n) {
             layout = l;
             father = n;
@@ -57,25 +66,44 @@ public class AStar {
                 first = this;
                 g = layout.getG();
             } else {
-                g = first.g - layout.getG();
+                g = first.g;
                 h = layout.getG();
+                level = father.level + 1;
             }
 
             f = g + h;
         }
 
+        /**
+         * Convert the state into a string. <br>
+         * Currently uses {@link #layout} toString's implementation.
+         * @return String representing the state.
+         */
         public String toString() {
             return layout.toString() + " " + f;
         }
 
+        /**
+         * Getter method of {@link #f}.
+         * @return {@link #f}
+         */
         public double getF() {
             return this.f;
         }
 
+        /**
+         * @return Returns a hashCode value for this object.
+         */
         public int hashCode() {
             return toString().hashCode();
         }
 
+        /**
+         * Check if two states are equal based on the {@link #layout} only. <br>
+         * In order to check if two states are equal, {@link #layout} equals method must be implemented.
+         * @param o object to be compared.
+         * @return True if {@code o} is equal to current state, false otherwise.
+         */
         public boolean equals(Object o) {
             if (o == null)
                 return false;
@@ -86,6 +114,12 @@ public class AStar {
         }
     }
 
+    /**
+     * Generate all successors based on a given state. <br>
+     * In order to do so, the {@link Ilayout#children()} method of the {@link State#layout} object is called.
+     * @param n State from which we want to generate successors.
+     * @return {@link List<State>} containing all the successors of the passed state {@code n};
+     */
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();
         /*System.out.println("---- PAI -----");
@@ -103,6 +137,12 @@ public class AStar {
         return sucs;
     }
 
+    /**
+     * This method is called whenever we want to solve a problem.
+     * @param s Context object that implements {@link Ilayout} interface.
+     * @return Returns a {@link Ilayout} representing a context object that matches the solution, or {@code null} in case no solution was found.
+     * @throws OutOfMemoryError when state search space exceeds memory limits.
+     */
     final public Ilayout solve(Ilayout s) {
         abertos = new PriorityQueue<>(1000,
                 (s1, s2) -> (int) Math.signum(s1.getF() - s2.getF()));

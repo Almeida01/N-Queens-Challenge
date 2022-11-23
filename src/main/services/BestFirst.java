@@ -24,7 +24,7 @@ public class BestFirst {
      * State class. <br>
      * Each state represents a node in the search tree, containing a layout (context object) and a father state.
      */
-    public static class State {
+    private static class State {
         /**
          * A variable representing the context which our algorithm is solving to.<br>
          * The context must implement the {@link Ilayout} interface, in order to be solvable.
@@ -35,7 +35,7 @@ public class BestFirst {
          */
         private State father;
         /**
-         * Heuristic value aka 'weight'
+         * Heuristic value representing weight of the state.
          */
         private int g;
 
@@ -52,7 +52,7 @@ public class BestFirst {
 
         /**
          * Convert the state into a string. <br>
-         * Current uses {@link #layout} toString's implementation.
+         * Currently uses {@link #layout} toString's implementation.
          * @return String representing the state.
          */
         public String toString() {
@@ -94,7 +94,7 @@ public class BestFirst {
      * Generate all successors based on a given state. <br>
      * In order to do so, the {@link Ilayout#children()} method of the {@link State#layout} object is called.
      * @param n State from which we want to generate successors.
-     * @return List <{@link State}> containing all the successors of the passed state {@code n};
+     * @return {@link List<State>} containing all the successors of the passed state {@code n};
      */
     final private List<State> sucessores(State n) {
         List<State> sucs = new ArrayList<>();

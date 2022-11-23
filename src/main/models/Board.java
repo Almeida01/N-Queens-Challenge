@@ -6,93 +6,88 @@ import java.util.*;
 
 import static java.lang.Math.abs;
 
+/**
+ * Board class representing a chess board. <br>
+ * The context of this board is to represent a chess board where queens will be placed following the constraints of the n-queens puzzle.
+ */
 public class Board implements Ilayout {
-    private final static Random random = new Random();
+    /**
+     * Integer value representing width and height of the board.
+     */
     private final int n;
 
     /**
-     * An integer array representing the board.\n
+     * An integer array representing the board.<br>
      * Each index of the array represents a row, where each index value represents the column where a queen is placed.
      */
     private int[] board;
 
+    /**
+     * Integer value representing the number of collisions on the board.
+     */
     private int numOfCollisions = 0;
+
+    /**
+     * Constant integer value representing the number of diagonals in a board. <br>
+     * This value is calculated by the formula: {@code 2 * n - 1};
+     */
     private static int NUMBER_OF_DIAGONALS;
 
+    /**
+     * Integer array representing diagonals with positive slope.
+     */
     private int[] frontSlashCollisions;
+
+    /**
+     * Integer array representing diagonals with negative slope.
+     */
     private int[] backSlashCollisions;
-    private boolean isFather = false;
 
-
+    /**
+     * Constructor class
+     *
+     * @param n Integer value representing width and height of the board.
+     */
     public Board(int n) {
         this.n = n;
-        while (!isPossible()) fillBoard();
-        fillBoard2();
-//        generateInitNQueens(3);
+        fillBoard();
         NUMBER_OF_DIAGONALS = 2 * n - 1;
         numOfCollisions = collides();
         updatedDiagonalCollisions();
-        isFather = true;
     }
 
-    public Board(int n, int[] board, int numOfCollisions) {
+    /**
+     * Private constructor class. <br>
+     * Only called to create boards from other previous boards.
+     *
+     * @param n               Integer value representing width and height of the board.
+     * @param board           A board is passed as a param in order to facilitate board creation. <br>
+     *                        This board is generated equal to the parent board. <br>
+     *                        For more information on how this board is modified prior to generation, check {@link #children()}. <br>
+     *                        For more information on what a board represents, check {@link #board}.
+     * @param numOfCollisions Integer value representing number of collisions. <br>
+     *                        For more information on why this value is passed as a parameter, check {@link #children()}.
+     */
+    private Board(int n, int[] board, int numOfCollisions) {
         this.n = n;
         this.board = board;
         NUMBER_OF_DIAGONALS = 2 * n - 1;
         this.numOfCollisions = numOfCollisions;
     }
 
-    private void generateInitNQueens(int p) {
-        board = new int[n];
-        int col = p;
-        int row = 0;
-        int save = col + 1;
-
-        if (col % 2 == 0) {
-            while (row < n) {
-                if (col + 2 < n) {
-                    board[row] = col + 2;
-                    col = col + 2;
-                } else {
-                    if (save == 2) {
-                        col = save;
-                        save++;
-                    } else {
-                        col = 1;
-                        save = 2;
-                    }
-                    board[row] = col;
-                }
-                row++;
-            }
-            if (board[0] == board[n - 1]) board[n - 1] = 0;
-        } else {
-            while (row < n) {
-                if (col + 2 < n) {
-                    board[row] = col + 2;
-                    col += 2;
-                } else {
-                    if (save == 1) col = save++;
-                    else {
-                        col = 0;
-                        save = 1;
-                    }
-                    board[row] = col;
-                }
-                row++;
-            }
-        }
-    }
-
+    /**
+     * Method to initialize and fill a board. <br>
+     * This method of initializing a board fills with various diagonals. <br>
+     * For a board of size {@code n = 6}: <br>
+     * {@code - Q - - - -} <br>
+     * {@code - - - Q - -} <br>
+     * {@code - - - - - Q} <br>
+     * {@code Q - - - - -} <br>
+     * {@code - - Q - - -} <br>
+     * {@code - - - - Q -} <br>
+     */
     private void fillBoard() {
-        this.board = new Random()
-                .ints(0, n)
-                .distinct()
-                .limit(n)
-                .toArray();
-    }
-
-    private void fillBoard2() {
+        this.board = new int[n];
         int j = 1;
         for (int i = 0; i < n; i++) {
             if (j >= n) j = 0;
@@ -101,6 +96,11 @@ public class Board implements Ilayout {
         }
     }
 
+    /**
+     * Return a board as a string.
+     *
+     * @return String representing a board as a string.
+     */
     public String toString() {
         StringBuilder str = new StringBuilder();
         for (int row = 0; row < n; row++) {
@@ -110,34 +110,40 @@ public class Board implements Ilayout {
             }
             str.append("\n");
         }
-        str.append("NUMBER OF COLLISIONS: ").append(numOfCollisions).append("\n");
-//        str.append("Front: ").append(Arrays.toString(frontSlashCollisions)).append("\n");
-//        str.append("Back: ").append(Arrays.toString(backSlashCollisions)).append("\n");
-
         return str.toString();
     }
 
-    public int getNumOfCollisions() {
-        return numOfCollisions;
-    }
-
+    /**
+     * @return Returns a hashCode value for this object.
+     */
     public int hashCode() {
         return Objects.hashCode(this.board);
     }
 
+    /**
+     * Swap the columns of two queens.
+     *
+     * @param i Row of a queen.
+     * @param j Row of a queen.
+     */
     private void swapColumns(int i, int j) {
         int temp = board[i];
         board[i] = board[j];
         board[j] = temp;
     }
 
+    /**
+     * Calculates the difference of collisions before and after swapping two queens using the difference of diagonal collisions of the swap.
+     *
+     * @param i Row of a queen to simulate swap.
+     * @param j Row of a queen to simulate swap.
+     * @return Integer representing the difference between the sum of the affected diagonal collisions before and after the swap.
+     */
     private int updateSlashCollisions(int i, int j) {
         int prevQFSlash = 0, prevQBSlash = 0;
         int aftQFSlash = 0, aftQBSlash = 0;
         int slope = calcSlope(i, board[i], j, board[j]);
 
-//        if (slope == -1) aftQBSlash++;
-//        else if (slope == 1) aftQFSlash++;
         if (slope == 1 || slope == -1) {
             aftQFSlash++;
             aftQBSlash++;
@@ -173,31 +179,69 @@ public class Board implements Ilayout {
         return dif;
     }
 
+    /**
+     * Calculate the index of the diagonal in {@link #frontSlashCollisions} of a given queen.
+     * @param row Row of a queen.
+     * @param col Column of a queen.
+     * @return Integer representing index of the queen's diagonal in {@link #frontSlashCollisions}.
+     */
     private int getFrontSlashIndex(int row, int col) {
         return row + col;
     }
 
+    /**
+     * Calculate the index of the diagonal in {@link #backSlashCollisions} of a given queen.
+     * @param row Row of a queen.
+     * @param col Column of a queen.
+     * @return Integer representing index of the queen's diagonal in {@link #backSlashCollisions}.
+     */
     private int getBackSlashIndex(int row, int col) {
         return Math.abs(n - 1 - col + row);
     }
 
-    private boolean checkDiagonalCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
-        int deltaRow = abs(tempQueenR - Q2row);
-        int deltaCol = abs(tempQueenC - Q2col);
+    /**
+     * Check if two queens collide diagonally.
+     * @param q1Row Row of first queen.
+     * @param q1Col Column of first queen.
+     * @param Q2row Row of second queen.
+     * @param Q2col Column of second queen.
+     * @return True if two queens collides, false otherwise.
+     */
+    private boolean checkDiagonalCollision(int q1Row, int q1Col, int Q2row, int Q2col) {
+        int deltaRow = abs(q1Row - Q2row);
+        int deltaCol = abs(q1Col - Q2col);
         return deltaCol == deltaRow;
     }
 
-    private int calcSlope(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
-        int deltaRow = abs(tempQueenR - Q2row);
-        int deltaCol = abs(tempQueenC - Q2col);
+    /**
+     * Calculates the slope between two queens.
+     * @param q1Row Row of first queen.
+     * @param q1Col Column of first queen.
+     * @param Q2row Row of second queen.
+     * @param Q2col Column of second queen.
+     * @return Integer value representing the slope between two queens.
+     */
+    private int calcSlope(int q1Row, int q1Col, int Q2row, int Q2col) {
+        int deltaRow = abs(q1Row - Q2row);
+        int deltaCol = abs(q1Col - Q2col);
         return deltaCol / deltaRow;
     }
 
-    private boolean checkAxisCollision(int tempQueenR, int tempQueenC, int Q2row, int Q2col) {
-        return tempQueenC == Q2col || tempQueenR == Q2row;
+    /**
+     * Check if two queens collide horizontally or vertically.
+     * @param q1Row Row of first queen.
+     * @param q1Col Column of first queen.
+     * @param Q2row Row of second queen.
+     * @param Q2col Column of second queen.
+     * @return True if they collide, false otherwise.
+     */
+    private boolean checkAxisCollision(int q1Row, int q1Col, int Q2row, int Q2col) {
+        return q1Col == Q2col || q1Row == Q2row;
     }
 
     private void updatedDiagonalCollisions() {
+        if (this.frontSlashCollisions != null || this.backSlashCollisions != null) return;
+
         this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         this.backSlashCollisions = new int[NUMBER_OF_DIAGONALS];
         for (int i = 0; i < n; i++) {
@@ -232,15 +276,15 @@ public class Board implements Ilayout {
 
     @Override
     public List<Ilayout> children() {
-        if (!isFather) updatedDiagonalCollisions();
+        updatedDiagonalCollisions();
         List<Ilayout> children = new ArrayList<>();
 //        Ilayout temp = null;
 //        int smallest = numOfCollisions;
         Board child;
         for (int i = 0; i < n; i++) {
-            int fColIndex = getFrontSlashIndex(i, board[i]);
-            int bColIndex = getBackSlashIndex(i, board[i]);
-            if (frontSlashCollisions[fColIndex] == 0 && backSlashCollisions[bColIndex] == 0) continue;
+//            int fColIndex = getFrontSlashIndex(i, board[i]);
+//            int bColIndex = getBackSlashIndex(i, board[i]);
+//            if (frontSlashCollisions[fColIndex] == 0 && backSlashCollisions[bColIndex] == 0) continue;
 
             for (int j = i + 1; j < n; j++) {
                 int dif = updateSlashCollisions(i, j);

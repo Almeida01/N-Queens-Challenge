@@ -6,11 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="110ff28f-2a02-4175-a69a-0e4b5a1e238d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Diagrams/N-Queens-Challenge.uml" beforeDir="false" afterPath="$PROJECT_DIR$/out/Diagrams/N-Queens-Challenge.uml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/models/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/models/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/services/AStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/AStar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/services/BestFirst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/BestFirst.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/IterativeDeepening.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/models/BoardTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/models/BoardTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/services/BestFirstTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/services/BestFirstTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,23 +37,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/gonca/Desktop/Uni/IA/N-Queens-Challenge/out/Diagrams",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/gonca/Desktop/Uni/IA/N-Queens-Challenge/out/Diagrams&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gonca\Desktop\Uni\IA\N-Queens-Challenge\src\tests" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.Main" />
@@ -96,7 +103,10 @@
       <workItem from="1669110661963" duration="4685000" />
       <workItem from="1669211780304" duration="2438000" />
       <workItem from="1669214477772" duration="42000" />
-      <workItem from="1669214532805" duration="4293000" />
+      <workItem from="1669214532805" duration="6371000" />
+      <workItem from="1669221087922" duration="7579000" />
+      <workItem from="1669232359551" duration="2205000" />
+      <workItem from="1669238842954" duration="1396000" />
     </task>
     <servers />
   </component>
