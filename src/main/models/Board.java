@@ -11,6 +11,13 @@ import static java.lang.Math.abs;
  * The context of this board is to represent a chess board where queens will be placed following the constraints of the n-queens puzzle.
  */
 public class Board implements Ilayout {
+
+    /**
+     * Constant integer value representing the number of diagonals in a board. <br>
+     * This value is calculated by the formula: {@code 2 * n - 1};
+     */
+    private static int NUMBER_OF_DIAGONALS;
+
     /**
      * Integer value representing width and height of the board.
      */
@@ -25,13 +32,7 @@ public class Board implements Ilayout {
     /**
      * Integer value representing the number of collisions on the board.
      */
-    private int numOfCollisions = 0;
-
-    /**
-     * Constant integer value representing the number of diagonals in a board. <br>
-     * This value is calculated by the formula: {@code 2 * n - 1};
-     */
-    private static int NUMBER_OF_DIAGONALS;
+    private final int numOfCollisions;
 
     /**
      * Integer array representing diagonals with positive slope.
@@ -68,11 +69,15 @@ public class Board implements Ilayout {
      * @param numOfCollisions Integer value representing number of collisions. <br>
      *                        For more information on why this value is passed as a parameter, check {@link #children()}.
      */
-    private Board(int n, int[] board, int numOfCollisions) {
+    public Board(int n, int[] board, int numOfCollisions) {
         this.n = n;
         this.board = board;
         NUMBER_OF_DIAGONALS = 2 * n - 1;
         this.numOfCollisions = numOfCollisions;
+    }
+
+    public Board createBoard(int n) {
+        return new Board(n);
     }
 
     /**
@@ -94,6 +99,14 @@ public class Board implements Ilayout {
             board[i] = j;
             j += 2;
         }
+    }
+
+    /**
+     * Getter method for number of collisions.
+     * @return {@link #numOfCollisions}.
+     */
+    public int getNumOfCollisions() {
+        return numOfCollisions;
     }
 
     /**
@@ -181,6 +194,7 @@ public class Board implements Ilayout {
 
     /**
      * Calculate the index of the diagonal in {@link #frontSlashCollisions} of a given queen.
+     *
      * @param row Row of a queen.
      * @param col Column of a queen.
      * @return Integer representing index of the queen's diagonal in {@link #frontSlashCollisions}.
@@ -191,6 +205,7 @@ public class Board implements Ilayout {
 
     /**
      * Calculate the index of the diagonal in {@link #backSlashCollisions} of a given queen.
+     *
      * @param row Row of a queen.
      * @param col Column of a queen.
      * @return Integer representing index of the queen's diagonal in {@link #backSlashCollisions}.
@@ -201,6 +216,7 @@ public class Board implements Ilayout {
 
     /**
      * Check if two queens collide diagonally.
+     *
      * @param q1Row Row of first queen.
      * @param q1Col Column of first queen.
      * @param Q2row Row of second queen.
@@ -215,6 +231,7 @@ public class Board implements Ilayout {
 
     /**
      * Calculates the slope between two queens.
+     *
      * @param q1Row Row of first queen.
      * @param q1Col Column of first queen.
      * @param Q2row Row of second queen.
@@ -229,6 +246,7 @@ public class Board implements Ilayout {
 
     /**
      * Check if two queens collide horizontally or vertically.
+     *
      * @param q1Row Row of first queen.
      * @param q1Col Column of first queen.
      * @param Q2row Row of second queen.
@@ -239,7 +257,11 @@ public class Board implements Ilayout {
         return q1Col == Q2col || q1Row == Q2row;
     }
 
+    /**
+     * Initialize and update the {@link #frontSlashCollisions} and {@link #backSlashCollisions} arrays.
+     */
     private void updatedDiagonalCollisions() {
+        // Only update if the diagonal arrays are not initialized.
         if (this.frontSlashCollisions != null || this.backSlashCollisions != null) return;
 
         this.frontSlashCollisions = new int[NUMBER_OF_DIAGONALS];
@@ -253,10 +275,10 @@ public class Board implements Ilayout {
     }
 
     /**
-     * This method checks if a given queen <code>tempQueenC</code> attacks any other queen.
+     * This method checks if a given queen {@code tempQueenC} attacks any other queen.
      * It iterates every other queen checking for collisions.
      *
-     * @return Returns a boolean value. True if it collides, false otherwise.
+     * @return Integer value representing number of collisions.
      */
     private int collides() {
         int collisions = 0;
@@ -266,44 +288,44 @@ public class Board implements Ilayout {
         return collisions;
     }
 
-    private int collides(int n) {
-        int collisions = 0;
-        for (int i = 0; i < n; i++)
-            for (int j = i + 1; j < n; j++)
-                if (checkDiagonalCollision(i, board[i], j, board[j])) collisions++;
-        return collisions;
-    }
-
+    /**
+     * Return all the children from the given board.
+     * Children are defined by the swap of two queens, but only a few are considered as a suitable child. <br>
+     * A suitable child is one that has fewer collisions than its father.
+     *
+     * @return {@code List<ILayout>} containing all the children from a board.
+     */
     @Override
     public List<Ilayout> children() {
         updatedDiagonalCollisions();
         List<Ilayout> children = new ArrayList<>();
-//        Ilayout temp = null;
-//        int smallest = numOfCollisions;
         Board child;
         for (int i = 0; i < n; i++) {
-//            int fColIndex = getFrontSlashIndex(i, board[i]);
-//            int bColIndex = getBackSlashIndex(i, board[i]);
-//            if (frontSlashCollisions[fColIndex] == 0 && backSlashCollisions[bColIndex] == 0) continue;
+            int fColIndex = getFrontSlashIndex(i, board[i]);
+            int bColIndex = getBackSlashIndex(i, board[i]);
+            if (frontSlashCollisions[fColIndex] == 0 && backSlashCollisions[bColIndex] == 0) continue;
 
             for (int j = i + 1; j < n; j++) {
+                // Only initialize diagonal arrays when needed.
                 int dif = updateSlashCollisions(i, j);
-                //System.out.println("Dif: " + dif);
+
+                // Only suitable children are created
                 if (dif < 0) {
                     child = new Board(this.n, this.board.clone(), numOfCollisions + dif);
                     child.swapColumns(i, j);
                     if (!child.isPossible()) continue;
                     children.add(child);
+
+                    // If we found a solution, leave early.
                     if (this.numOfCollisions + dif == 0) {
                         this.backSlashCollisions = null;
                         this.frontSlashCollisions = null;
                         return children;
                     }
                 }
-
             }
         }
-
+        // Set diagonal arrays to free memory.
         this.frontSlashCollisions = null;
         this.backSlashCollisions = null;
         return children;
@@ -316,9 +338,13 @@ public class Board implements Ilayout {
 
     @Override
     public int getG() {
-        return numOfCollisions;
+        return getNumOfCollisions();
     }
 
+    /**
+     * Check if, when the board has an even {@link #n}, a queen is placed on the second row and column of the board.
+     * @return True if valid, false otherwise.
+     */
     @Override
     public boolean isPossible() {
         if (board == null) return false;

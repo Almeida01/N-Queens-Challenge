@@ -3,67 +3,40 @@
   <ID>JAVA</ID>
   <OriginalElement>C:/Users/gonca/Desktop/Uni/IA/N-Queens-Challenge</OriginalElement>
   <nodes>
-    <node x="635.2526800728699" y="-113.75">main.services.AStar.State</node>
-    <node x="-77.39062499999989" y="-213.16164944926268">main.Main</node>
-    <node x="668.6031740949309" y="345.0798937784519">main.services.BestFirst.State</node>
     <node x="-152.8906249999999" y="-92.51191198786063">main.models.Board</node>
-    <node x="457.58900294282535" y="194.48808801213937">main.services.Ilayout</node>
-    <node x="242.29865725896866" y="-81.33041973094171">main.services.AStar</node>
-    <node x="250.27942855941706" y="345.0798937784519">main.services.BestFirst</node>
+    <node x="332.66479767688634" y="-23.674547780067">main.Main</node>
+    <node x="675.2131892694376" y="-55.598582690741125">main.services.BestFirst.State</node>
+    <node x="321.16479767688634" y="139.48808801213937">main.services.Ilayout</node>
+    <node x="657.2131892694376" y="242.82936632850056">main.services.BestFirst</node>
   </nodes>
   <notes />
   <edges>
     <edge source="main.services.BestFirst" target="main.services.BestFirst.State" relationship="TO_MANY">
-      <point x="102.80769147982069" y="21.40810622154811" />
-      <point x="563.8451470670843" y="449.488" />
-      <point x="563.8451470670843" y="449.62802224215187" />
-      <point x="-85.00823017923562" y="-0.4518715363000183" />
-    </edge>
-    <edge source="main.services.AStar.State" target="main.services.AStar" relationship="INNER_CLASS">
-      <point x="-86.90867943150306" y="49.9920938044838" />
-      <point x="536.4737457959641" y="63.2420938044838" />
-      <point x="536.4737457959641" y="62.49915654887842" />
-      <point x="104.1683726200672" y="49.82957627982013" />
-    </edge>
-    <edge source="main.services.AStar" target="main.services.Ilayout" relationship="TO_MANY">
-      <point x="3.2282298033239396" y="88.60483680717489" />
-      <point x="351.5268870622926" y="226.74536662016766" />
-      <point x="460.57052272757744" y="226.74536662016766" />
-      <point x="-85.0184802152479" y="-47.123567832767236" />
+      <point x="14.999825905069088" y="-83.0" />
+      <point x="14.999825905069088" y="105.0" />
     </edge>
     <edge source="main.models.Board" target="main.services.Ilayout" relationship="REALIZATION">
-      <point x="152.0" y="2.8421709430404007E-14" />
-      <point x="253.26925098094188" y="254.4880880121394" />
-      <point x="253.26925098094188" y="254.48808801213937" />
+      <point x="158.61001517450734" y="0.0" />
       <point x="-88.0" y="0.0" />
     </edge>
     <edge source="main.services.BestFirst.State" target="main.services.BestFirst" relationship="INNER_CLASS">
-      <point x="-85.4892397512499" y="-43.75690925876307" />
-      <point x="567.5056519831841" y="406.3229845196888" />
-      <point x="567.5056519831841" y="405.6232159815722" />
-      <point x="103.24321839413028" y="-22.456677796879717" />
-    </edge>
-    <edge source="main.services.AStar.State" target="main.services.Ilayout" relationship="TO_ONE">
-      <point x="0.0" y="127.0" />
-      <point x="723.2526800728699" y="225.5026367713004" />
-      <point x="88.2005332376666" y="-28.985451240838984" />
+      <point x="67.36398968048684" y="192.9463335374786" />
+      <point x="830.5771789499245" y="242.34775084673748" />
+      <point x="830.5771789499245" y="186.6928150712198" />
+      <point x="67.36398968048684" y="-170.47046209784804" />
     </edge>
     <edge source="main.services.BestFirst.State" target="main.services.Ilayout" relationship="TO_ONE">
-      <point x="-11.13907278295801" y="-101.5151286492694" />
-      <point x="745.4641013119729" y="291.5918921819141" />
-      <point x="80.565946250362" y="37.10380416977469" />
-    </edge>
-    <edge source="main.services.AStar" target="main.services.AStar.State" relationship="TO_MANY">
-      <point x="106.79807713004486" y="0.0" />
-      <point x="-88.0" y="0.0" />
+      <point x="-27.364711648800267" y="109.2651746421827" />
+      <point x="735.8484776206374" y="183.02479752352045" />
+      <point x="90.51957258108024" y="-16.463290488618924" />
     </edge>
     <edge source="main.services.BestFirst" target="main.services.Ilayout" relationship="TO_MANY">
-      <point x="-4.22005702040218" y="-80.22141844213002" />
-      <point x="352.0593715390149" y="283.3632286995514" />
-      <point x="-82.33403895964261" y="28.875140687412056" />
+      <point x="-27.501504899179622" y="-77.12830411302252" />
+      <point x="735.711684370258" y="219.37988098330797" />
+      <point x="88.31623418957793" y="19.8917929711686" />
     </edge>
   </edges>
-  <settings layout="Hierarchic" zoom="0.703687441776641" showDependencies="true" x="496.03993399208366" y="273.3742994021154" />
+  <settings layout="Hierarchic" zoom="0.8287223340040244" showDependencies="true" x="443.3963581183609" y="204.93052212443095" />
   <SelectedNodes />
   <Categories>
     <Category>Constructors</Category>
