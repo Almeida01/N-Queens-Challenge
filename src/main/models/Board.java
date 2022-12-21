@@ -58,7 +58,7 @@ public class Board implements Ilayout {
     }
 
     /**
-     * Private constructor class. <br>
+     * Constructor class. <br>
      * Only called to create boards from other previous boards.
      *
      * @param n               Integer value representing width and height of the board.
@@ -74,10 +74,6 @@ public class Board implements Ilayout {
         this.board = board;
         NUMBER_OF_DIAGONALS = 2 * n - 1;
         this.numOfCollisions = numOfCollisions;
-    }
-
-    public Board createBoard(int n) {
-        return new Board(n);
     }
 
     /**
@@ -325,6 +321,7 @@ public class Board implements Ilayout {
                 }
             }
         }
+
         // Set diagonal arrays to free memory.
         this.frontSlashCollisions = null;
         this.backSlashCollisions = null;
